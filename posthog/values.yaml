@@ -3,7 +3,7 @@
 # Declare variables to be passed into your templates.
 image:
   repository: posthog/posthog
-  tag: release-1.0.10
+  tag: release-1.0.10.1
   pullPolicy: IfNotPresent
 
 posthogSecret: ''
