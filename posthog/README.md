@@ -53,8 +53,8 @@ $ kubectl delete job/posthog-migrate
 
 The following table lists the configurable parameters of the PostHog chart and their default values.
 
-Dependent charts can also have values overwritten. Preface values with postgresql.* or redis.*
-=======
+Dependent charts can also have values overwritten. Preface values with postgresql.*
+
 Parameter                                            | Description                                                                                                | Default
 :--------------------------------------------------- | :--------------------------------------------------------------------------------------------------------- | :---------------------------------------------------
 `image.repository`                                   | PostHog image                                                                                              | `posthog/posthog`
