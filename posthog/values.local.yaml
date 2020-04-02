@@ -1,12 +1,8 @@
 # helm install -f ./values.local.yaml posthog .
 # helm upgrade -f ./values.local.yaml posthog .
 
-env:
-- name: 'DATABASE_URL'
-  value: 'postgres://postgres:postgres@posthog-posthog-postgresql/posthog'
-
 web:
-  replicacount: 1
+  replicacount: 2
 
 posthogSecret: 'werjawoeifj;avsdfnvas.fklwejfwa;elkfjwalke;fjawklejfawkl;'
 
@@ -19,3 +15,4 @@ postgresql:
 ingress:
   enabled: true
   hostname: posthog.127.0.0.1.nip.io
+
