@@ -14,14 +14,18 @@ type: application
 
 # This is the chart version. This version number should be incremented each time you make changes
 # to the chart and its templates, including the app version.
-version: 1.0.3
+version: 1.0.4
 
 # This is the version number of the application being deployed. This version number should be
 # incremented each time you make changes to the application.
-appVersion: 1.0.10.1
+appVersion: 1.0.11
 
 dependencies:
   - name: postgresql
     version: 8.6.1
     repository: https://kubernetes-charts.storage.googleapis.com/
     condition: postgresql.enabled
+  - name: redis
+    version: 9.3.2
+    repository: https://kubernetes-charts.storage.googleapis.com/
+    condition: redis.enabled

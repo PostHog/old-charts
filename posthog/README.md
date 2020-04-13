@@ -13,7 +13,7 @@ $ helm install posthog .
 
 This chart bootstraps a [PostHog](https://posthog.com/) deployment on a [Kubernetes](http://kubernetes.io) cluster using the [Helm](https://helm.sh) package manager.
 
-It also optionally packages [PostgreSQL](https://github.com/kubernetes/charts/tree/master/stable/postgresql) which is required for PostHog.
+It also optionally packages [PostgreSQL](https://github.com/kubernetes/charts/tree/master/stable/postgresql) and [Redis](https://github.com/kubernetes/charts/tree/master/stable/redis) which are required for PostHog.
 
 ## Prerequisites
 
@@ -107,6 +107,12 @@ Parameter                                            | Description              
 `postgresql.postgresqlPort`                          | External postgres port                                                                                     | `5432`
 `postgresql.existingSecret`                          | Name of existing secret to use for the PostgreSQL password                                                 | `nil`
 `postgresql.existingSecretKey`                       | Key to get from the `postgresql.existingSecret` secret                                                     | `postgresql-password`                                                                               | `nil`
+`redis.enabled`                                      | Deploy redis server (see below)                                                                            | `true`
+`redis.host`                                         | External redis host                                                                                        | `nil`
+`redis.password`                                     | External redis password                                                                                    | `nil`
+`redis.port`                                         | External redis port                                                                                        | `6379`
+`redis.existingSecret`                               | Name of existing secret to use for the Redis password                                                      | `nil`
+`redis.existingSecretKey`                            | Key to get from the `redis.existingSecret` secret                                                          | `redis-password`
 `metrics.enabled`                                    | Start an exporter for posthog metrics                                                                      | `false`
 `metrics.nodeSelector`                               | Node labels for metrics pod assignment                                                                     | `{}`
 `metrics.tolerations`                                | Toleration labels for metrics pod assignment                                                               | `[]`
@@ -151,6 +157,12 @@ $ helm install -f my-values.yaml my-release .
 By default, PostgreSQL is installed as part of the chart. To use an external PostgreSQL server set `postgresql.enabled` to `false` and then set `postgresql.postgresHost` and `postgresql.postgresqlPassword`. The other options (`postgresql.postgresqlDatabase`, `postgresql.postgresqlUsername` and `postgresql.postgresqlPort`) may also want changing from their default values.
 
 To avoid issues when upgrading this chart, provide `postgresql.postgresqlPassword` for subsequent upgrades. This is due to an issue in the PostgreSQL chart where password will be overwritten with randomly generated passwords otherwise. See https://github.com/helm/charts/tree/master/stable/postgresql#upgrade for more detail.
+
+## Redis
+
+By default, Redis is installed as part of the chart. To use an external Redis server/cluster set `redis.enabled` to `false` and then set `redis.host`. If your redis cluster uses password define it with `redis.password`, otherwise just omit it. Check the table above for more configuration options.
+
+To avoid issues when upgrading this chart, provide `redis.password` for subsequent upgrades. Otherwise the redis pods will get recreated on every update, potentially incurring some downtime.
 
 ## Ingress
 
