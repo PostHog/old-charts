@@ -87,6 +87,15 @@ Parameter                                            | Description              
 `web.hpa.cputhreshold`                               | CPU threshold percent for the web HorizontalPodAutoscaler                                                  | `60`
 `web.hpa.minpods`                                    | Min pods for the web HorizontalPodAutoscaler                                                               | `1`
 `web.hpa.maxpods`                                    | Max pods for the web HorizontalPodAutoscaler                                                               | `10`
+`email.from_email`                                   | Emails are sent are from                                                                                   | `tim@posthog.com`
+`email.host`                                         | SMTP host for sending email                                                                                | `smtp`
+`email.port`                                         | SMTP port                                                                                                  | `578`
+`email.user`                                         | SMTP user                                                                                                  | `nil`
+`email.password`                                     | SMTP password                                                                                              | `nil`
+`email.use_tls`                                      | SMTP TLS for security                                                                                      | `false`
+`email.use_ssl`                                      | SMTP SSL for security                                                                                      | `false`
+`email.existingSecret`                               | SMTP password from an existing secret                                                                      | `nil`
+`email.existingSecretKey`                            | Key to get from the `email.existingSecret` secret                                                          | `smtp-password`
 `service.type`                                       | Kubernetes service type                                                                                    | `LoadBalancer`
 `service.name`                                       | Kubernetes service name                                                                                    | `posthog`
 `service.externalPort`                               | Kubernetes external service port                                                                           | `8000`
