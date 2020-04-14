@@ -5,8 +5,9 @@
 ## TL;DR;
 
 ```console
-$ cd chart
-$ helm install posthog .
+helm repo add posthog https://posthog.github.io/charts/
+helm repo update
+helm install posthog posthog/posthog
 ```
 
 ## Introduction
@@ -21,12 +22,19 @@ It also optionally packages [PostgreSQL](https://github.com/kubernetes/charts/tr
 - helm >= v3
 - PV provisioner support in the underlying infrastructure (with persistence storage enabled)
 
+## Adding the PostHog repository
+
+```console
+helm repo add posthog https://posthog.github.io/charts/
+helm repo update
+```
+
 ## Installing the Chart
 
 To install the chart with the release name `my-release`:
 
 ```console
-$ helm install my-release .
+helm install my-release posthog/posthog
 ```
 
 The command deploys PostHog on the Kubernetes cluster in the default configuration. The [configuration](#configuration) section lists the parameters that can be configured during installation.
@@ -38,7 +46,7 @@ The command deploys PostHog on the Kubernetes cluster in the default configurati
 To uninstall/delete the `my-release` deployment:
 
 ```console
-$ helm delete my-release
+helm delete my-release
 ```
 
 The command removes all the Kubernetes components associated with the chart and deletes the release.
@@ -46,7 +54,7 @@ The command removes all the Kubernetes components associated with the chart and 
 > **Warning**: Jobs are not deleted automatically. They need to be manually deleted
 
 ```console
-$ kubectl delete job/posthog-migrate
+kubectl delete job/posthog-migrate
 ```
 
 ## Configuration
@@ -135,15 +143,15 @@ Dependent charts can also have values overwritten. Preface values with "postgres
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
 ```console
-$ helm install \
-  --set persistence.enabled=false,email.host=email \
-  my-release .
+helm install \
+     --set persistence.enabled=false,email.host=email \
+     my-release .
 ```
 
 Alternatively, a YAML file that specifies the values for the above parameters can be provided while installing the chart. For example,
 
 ```console
-$ helm install -f my-values.yaml my-release .
+helm install -f my-values.yaml my-release .
 ```
 
 ## PostgresSQL
