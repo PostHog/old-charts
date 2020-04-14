@@ -1,0 +1,14 @@
+apiVersion: v1
+entries:
+  posthog:
+  - apiVersion: v1
+    appVersion: 1.0.10.1
+    created: "2020-04-14T12:31:02.035046553Z"
+    description: "\U0001F994 PostHog is developer-friendly, open-source product analytics."
+    digest: de691a17587549b0dc9893be7aa6e3a3a25fd45352db35d48ebb2c9298009424
+    name: posthog
+    type: application
+    urls:
+    - https://github.com/PostHog/charts/releases/download/posthog-1.0.3.1/posthog-1.0.3.1.tgz
+    version: 1.0.3.1
+generated: "2020-04-14T12:31:01.936178144Z"
