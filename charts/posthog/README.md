@@ -5,16 +5,15 @@
 ## TL;DR;
 
 ```console
-helm repo add posthog https://posthog.github.io/charts/
-helm repo update
-helm install posthog posthog/posthog
+$ cd chart
+$ helm install posthog .
 ```
 
 ## Introduction
 
 This chart bootstraps a [PostHog](https://posthog.com/) deployment on a [Kubernetes](http://kubernetes.io) cluster using the [Helm](https://helm.sh) package manager.
 
-It also optionally packages [PostgreSQL](https://github.com/kubernetes/charts/tree/master/stable/postgresql) which is required for PostHog.
+It also optionally packages [PostgreSQL](https://github.com/kubernetes/charts/tree/master/stable/postgresql) and [Redis](https://github.com/kubernetes/charts/tree/master/stable/redis) which are required for PostHog.
 
 ## Prerequisites
 
@@ -22,19 +21,12 @@ It also optionally packages [PostgreSQL](https://github.com/kubernetes/charts/tr
 - helm >= v3
 - PV provisioner support in the underlying infrastructure (with persistence storage enabled)
 
-## Adding the PostHog repository
-
-```console
-helm repo add posthog https://posthog.github.io/charts/
-helm repo update
-```
-
 ## Installing the Chart
 
 To install the chart with the release name `my-release`:
 
 ```console
-helm install my-release posthog/posthog
+$ helm install my-release .
 ```
 
 The command deploys PostHog on the Kubernetes cluster in the default configuration. The [configuration](#configuration) section lists the parameters that can be configured during installation.
@@ -46,7 +38,7 @@ The command deploys PostHog on the Kubernetes cluster in the default configurati
 To uninstall/delete the `my-release` deployment:
 
 ```console
-helm delete my-release
+$ helm delete my-release
 ```
 
 The command removes all the Kubernetes components associated with the chart and deletes the release.
@@ -54,7 +46,7 @@ The command removes all the Kubernetes components associated with the chart and 
 > **Warning**: Jobs are not deleted automatically. They need to be manually deleted
 
 ```console
-kubectl delete job/posthog-migrate
+$ kubectl delete job/posthog-migrate
 ```
 
 ## Configuration
@@ -95,6 +87,15 @@ Parameter                                            | Description              
 `web.hpa.cputhreshold`                               | CPU threshold percent for the web HorizontalPodAutoscaler                                                  | `60`
 `web.hpa.minpods`                                    | Min pods for the web HorizontalPodAutoscaler                                                               | `1`
 `web.hpa.maxpods`                                    | Max pods for the web HorizontalPodAutoscaler                                                               | `10`
+`email.from_email`                                   | Emails are sent are from                                                                                   | `tim@posthog.com`
+`email.host`                                         | SMTP host for sending email                                                                                | `smtp`
+`email.port`                                         | SMTP port                                                                                                  | `578`
+`email.user`                                         | SMTP user                                                                                                  | `nil`
+`email.password`                                     | SMTP password                                                                                              | `nil`
+`email.use_tls`                                      | SMTP TLS for security                                                                                      | `false`
+`email.use_ssl`                                      | SMTP SSL for security                                                                                      | `false`
+`email.existingSecret`                               | SMTP password from an existing secret                                                                      | `nil`
+`email.existingSecretKey`                            | Key to get from the `email.existingSecret` secret                                                          | `smtp-password`
 `service.type`                                       | Kubernetes service type                                                                                    | `LoadBalancer`
 `service.name`                                       | Kubernetes service name                                                                                    | `posthog`
 `service.externalPort`                               | Kubernetes external service port                                                                           | `8000`
@@ -115,6 +116,12 @@ Parameter                                            | Description              
 `postgresql.postgresqlPort`                          | External postgres port                                                                                     | `5432`
 `postgresql.existingSecret`                          | Name of existing secret to use for the PostgreSQL password                                                 | `nil`
 `postgresql.existingSecretKey`                       | Key to get from the `postgresql.existingSecret` secret                                                     | `postgresql-password`                                                                               | `nil`
+`redis.enabled`                                      | Deploy redis server (see below)                                                                            | `true`
+`redis.host`                                         | External redis host                                                                                        | `nil`
+`redis.password`                                     | External redis password                                                                                    | `nil`
+`redis.port`                                         | External redis port                                                                                        | `6379`
+`redis.existingSecret`                               | Name of existing secret to use for the Redis password                                                      | `nil`
+`redis.existingSecretKey`                            | Key to get from the `redis.existingSecret` secret                                                          | `redis-password`
 `metrics.enabled`                                    | Start an exporter for posthog metrics                                                                      | `false`
 `metrics.nodeSelector`                               | Node labels for metrics pod assignment                                                                     | `{}`
 `metrics.tolerations`                                | Toleration labels for metrics pod assignment                                                               | `[]`
@@ -143,15 +150,15 @@ Dependent charts can also have values overwritten. Preface values with "postgres
 Specify each parameter using the `--set key=value[,key=value]` argument to `helm install`. For example,
 
 ```console
-helm install \
-     --set persistence.enabled=false,email.host=email \
-     my-release .
+$ helm install \
+  --set persistence.enabled=false,email.host=email \
+  my-release .
 ```
 
 Alternatively, a YAML file that specifies the values for the above parameters can be provided while installing the chart. For example,
 
 ```console
-helm install -f my-values.yaml my-release .
+$ helm install -f my-values.yaml my-release .
 ```
 
 ## PostgresSQL
@@ -159,6 +166,12 @@ helm install -f my-values.yaml my-release .
 By default, PostgreSQL is installed as part of the chart. To use an external PostgreSQL server set `postgresql.enabled` to `false` and then set `postgresql.postgresHost` and `postgresql.postgresqlPassword`. The other options (`postgresql.postgresqlDatabase`, `postgresql.postgresqlUsername` and `postgresql.postgresqlPort`) may also want changing from their default values.
 
 To avoid issues when upgrading this chart, provide `postgresql.postgresqlPassword` for subsequent upgrades. This is due to an issue in the PostgreSQL chart where password will be overwritten with randomly generated passwords otherwise. See https://github.com/helm/charts/tree/master/stable/postgresql#upgrade for more detail.
+
+## Redis
+
+By default, Redis is installed as part of the chart. To use an external Redis server/cluster set `redis.enabled` to `false` and then set `redis.host`. If your redis cluster uses password define it with `redis.password`, otherwise just omit it. Check the table above for more configuration options.
+
+To avoid issues when upgrading this chart, provide `redis.password` for subsequent upgrades. Otherwise the redis pods will get recreated on every update, potentially incurring some downtime.
 
 ## Ingress
 

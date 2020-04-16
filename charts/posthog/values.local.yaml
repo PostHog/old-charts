@@ -12,7 +12,9 @@ postgresql:
   postgresqlUsername: postgres
   postgresqlPassword: postgres
 
+redis:
+  password: 'some-stable-password'
+
 ingress:
   enabled: true
   hostname: posthog.127.0.0.1.nip.io
-

@@ -1,54 +1,67 @@
-apiVersion: batch/v1
-kind: Job
+apiVersion: apps/v1
+kind: Deployment
 metadata:
-  name: "{{ .Release.Name }}-migrate"
+  name: {{ template "posthog.fullname" . }}-beat
   labels:
     app: {{ template "posthog.fullname" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
-  annotations:
-    # This is what defines this resource as a hook. Without this line, the
-    # job is considered part of the release.
-    "helm.sh/hook": "post-install,post-upgrade"
-    "helm.sh/hook-delete-policy": "hook-succeeded,before-hook-creation"
-    "helm.sh/hook-weight": "-5"
 spec:
+  selector:
+    matchLabels:
+        app: {{ template "posthog.fullname" . }}
+        release: "{{ .Release.Name }}"
+        role: beat
+  replicas: {{ .Values.beat.replicacount }}
   template:
     metadata:
-      name: "{{ .Release.Name }}-migrate"
       annotations:
+        metrics-enabled: {{ .Values.metrics.enabled | quote }}
         checksum/secrets.yaml: {{ include (print $.Template.BasePath "/secrets.yaml") . | sha256sum }}
+      {{- if .Values.beat.podAnnotations }}
+{{ toYaml .Values.beat.podAnnotations | indent 8 }}
+      {{- end }}
       labels:
         app: {{ template "posthog.fullname" . }}
         release: "{{ .Release.Name }}"
-        {{- if .Values.worker.podLabels }}
-{{ toYaml .Values.worker.podLabels | indent 8 }}
+        role: beat
+        {{- if .Values.beat.podLabels }}
+{{ toYaml .Values.beat.podLabels | indent 8 }}
         {{- end }}
     spec:
-      {{- with .Values.hooks.affinity }}
+      serviceAccountName: {{ template "posthog.serviceAccountName" . }}
+      {{- if .Values.beat.affinity }}
       affinity:
-{{ toYaml . | indent 8 }}
+{{ toYaml .Values.beat.affinity | indent 8 }}
       {{- end }}
-      restartPolicy: Never
+      {{- if .Values.beat.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.beat.nodeSelector | indent 8 }}
+      {{- end }}
+      {{- if .Values.beat.tolerations }}
+      tolerations:
+{{ toYaml .Values.beat.tolerations | indent 8 }}
+      {{- end }}
+      {{- if .Values.beat.schedulerName }}
+      schedulerName: "{{ .Values.beat.schedulerName }}"
+      {{- end }}
       {{- if .Values.image.imagePullSecrets }}
       imagePullSecrets:
 {{ toYaml .Values.image.imagePullSecrets | indent 8 }}
       {{- end }}
       containers:
-      - name: migrate-job
+      - name: {{ .Chart.Name }}-beat
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-        command: ["python","manage.py","migrate"]
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        command:
+          - /bin/sh
+          - -c
+          - |
+            ./bin/docker-worker-beat
+        ports:
+        - containerPort: {{ .Values.service.internalPort }}
         env:
-{{- if .Values.env }}
-{{ toYaml .Values.env | indent 8 }}
-{{- end }}
-{{- if .Values.worker.env }}
-{{ toYaml .Values.worker.env | indent 8 }}
-{{- end }}
-{{- if .Values.hooks.migrate.env }}
-{{ toYaml .Values.hooks.migrate.env | indent 8 }}
-{{- end }}
         - name: SECRET_KEY
           valueFrom:
             secretKeyRef:
@@ -107,5 +120,8 @@ spec:
           value: {{ .Values.email.use_ssl | quote }}
         - name: DEFAULT_FROM_EMAIL
           value: {{ .Values.email.from_email | quote }}
+{{- if .Values.beat.env }}
+{{ toYaml .Values.beat.env | indent 8 }}
+{{- end }}
         resources:
-{{ toYaml .Values.hooks.migrate.resources | indent 10 }}
+{{ toYaml .Values.beat.resources | indent 12 }}
