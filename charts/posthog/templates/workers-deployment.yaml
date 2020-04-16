@@ -1,54 +1,70 @@
-apiVersion: batch/v1
-kind: Job
+apiVersion: apps/v1
+kind: Deployment
 metadata:
-  name: "{{ .Release.Name }}-migrate"
+  name: {{ template "posthog.fullname" . }}-worker
   labels:
     app: {{ template "posthog.fullname" . }}
     chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
-  annotations:
-    # This is what defines this resource as a hook. Without this line, the
-    # job is considered part of the release.
-    "helm.sh/hook": "post-install,post-upgrade"
-    "helm.sh/hook-delete-policy": "hook-succeeded,before-hook-creation"
-    "helm.sh/hook-weight": "-5"
 spec:
+  selector:
+    matchLabels:
+        app: {{ template "posthog.fullname" . }}
+        release: "{{ .Release.Name }}"
+        role: worker
+  replicas: {{ .Values.worker.replicacount }}
   template:
     metadata:
-      name: "{{ .Release.Name }}-migrate"
       annotations:
+        metrics-enabled: {{ .Values.metrics.enabled | quote }}
         checksum/secrets.yaml: {{ include (print $.Template.BasePath "/secrets.yaml") . | sha256sum }}
+      {{- if .Values.worker.podAnnotations }}
+{{ toYaml .Values.worker.podAnnotations | indent 8 }}
+      {{- end }}
       labels:
         app: {{ template "posthog.fullname" . }}
         release: "{{ .Release.Name }}"
+        role: worker
         {{- if .Values.worker.podLabels }}
 {{ toYaml .Values.worker.podLabels | indent 8 }}
         {{- end }}
     spec:
-      {{- with .Values.hooks.affinity }}
+      serviceAccountName: {{ template "posthog.serviceAccountName" . }}
+      {{- if .Values.worker.affinity }}
       affinity:
-{{ toYaml . | indent 8 }}
+{{ toYaml .Values.worker.affinity | indent 8 }}
       {{- end }}
-      restartPolicy: Never
+      {{- if .Values.worker.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.worker.nodeSelector | indent 8 }}
+      {{- end }}
+      {{- if .Values.worker.tolerations }}
+      tolerations:
+{{ toYaml .Values.worker.tolerations | indent 8 }}
+      {{- end }}
+      {{- if .Values.worker.schedulerName }}
+      schedulerName: "{{ .Values.worker.schedulerName }}"
+      {{- end }}
+      {{- if .Values.worker.priorityClassName }}
+      priorityClassName: "{{ .Values.worker.priorityClassName }}"
+      {{- end }}
       {{- if .Values.image.imagePullSecrets }}
       imagePullSecrets:
 {{ toYaml .Values.image.imagePullSecrets | indent 8 }}
       {{- end }}
       containers:
-      - name: migrate-job
+      - name: {{ .Chart.Name }}-workers
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-        command: ["python","manage.py","migrate"]
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        command:
+          - /bin/sh
+          - -c
+          - |
+            ./bin/docker-worker-celery
+        ports:
+        - containerPort: {{ .Values.service.internalPort }}
         env:
-{{- if .Values.env }}
-{{ toYaml .Values.env | indent 8 }}
-{{- end }}
-{{- if .Values.worker.env }}
-{{ toYaml .Values.worker.env | indent 8 }}
-{{- end }}
-{{- if .Values.hooks.migrate.env }}
-{{ toYaml .Values.hooks.migrate.env | indent 8 }}
-{{- end }}
         - name: SECRET_KEY
           valueFrom:
             secretKeyRef:
@@ -107,5 +123,8 @@ spec:
           value: {{ .Values.email.use_ssl | quote }}
         - name: DEFAULT_FROM_EMAIL
           value: {{ .Values.email.from_email | quote }}
+{{- if .Values.worker.env }}
+{{ toYaml .Values.worker.env | indent 8 }}
+{{- end }}
         resources:
-{{ toYaml .Values.hooks.migrate.resources | indent 10 }}
+{{ toYaml .Values.worker.resources | indent 12 }}
