@@ -4,7 +4,7 @@ on:
     tags:
       - '*.*.*' 
 
-name: Create Release
+name: Create GitHub Release
 
 jobs:
   build:
@@ -13,6 +13,10 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      # Create GitHub release
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
@@ -23,3 +27,19 @@ jobs:
           release_name: ${{ github.ref }}
           draft: false
           prerelease: false
+
+      # Release new chart version on Helm
+      - name: Configure Git
+        run: |
+          git config user.name "$GITHUB_ACTOR"
+          git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
+
+      - name: Install Helm
+        uses: azure/setup-helm@v1
+        with:
+          version: v3.4.0
+
+      - name: Run chart-releaser
+        uses: helm/chart-releaser-action@v1.1.1
+        env:
+          CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
