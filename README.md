@@ -17,9 +17,9 @@ As a baseline we suggest having at least 4gb of memory per node
 
 ## GitHub Actions
 
-We have an action to create releases when a new tag is pushed. This will trigger if tags follow our version pattern, defined as `*.*.*` for simplicity.
+We have an action to create new releases automatically. On pushes to `master`, it checks that the version was bumped and then:
 
-The action will: 
+- Creates a GitHub release from the tag
+- Pushes a new release to https://posthog.github.io/charts/
 
-- Create a GitHub release from the tag
-- Push a new release to Helm 
+If the bot fails to create a release, take a look at the [upstream action repo](https://github.com/helm/chart-releaser-action) to see if there were any breaking changes.
