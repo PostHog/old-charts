@@ -1,17 +1,15 @@
+name: Release Charts
+
 on:
   push:
-    # Pattern to match against tag name to trigger job
-    tags:
-      - '*.*.*' 
-
-name: Create GitHub Release
+    branches:
+      - master
 
 jobs:
-  build:
-    name: Create Release
+  release:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
+      - name: Checkout
         uses: actions/checkout@v2
         with:
           fetch-depth: 0
