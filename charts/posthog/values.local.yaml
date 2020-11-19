@@ -3,6 +3,10 @@
 
 web:
   replicacount: 2
+worker:
+  replicacount: 2
+plugins:
+  replicacount: 4
 
 posthogSecret: 'werjawoeifj;avsdfnvas.fklwejfwa;elkfjwalke;fjawklejfawkl;'
 
