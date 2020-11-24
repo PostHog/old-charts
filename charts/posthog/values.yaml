@@ -93,6 +93,32 @@ worker:
   # podLabels: []
   # concurrency:
 
+# How many plugin server instances to run
+plugins:
+  hpa:
+    enabled: false
+    cputhreshold: 60
+    minpods: 1
+    maxpods: 10
+  env: []
+  replicacount: 2
+  resources:
+    {}
+    # limits:
+    #   cpu: 300m
+    #   memory: 500Mi
+    # requests:
+    #   cpu: 100m
+    #   memory: 100Mi
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+  # priorityClassName: ""
+  # schedulerName:
+  # Optional extra labels for pod, i.e. redis-client: "true"
+  # podLabels: []
+  # concurrency:
+
 # Outbound E-mails
 email:
   from_email: tim@posthog.com

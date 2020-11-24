@@ -1,0 +1,130 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "posthog.fullname" . }}-plugins
+  labels:
+    app: {{ template "posthog.fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  selector:
+    matchLabels:
+        app: {{ template "posthog.fullname" . }}
+        release: "{{ .Release.Name }}"
+        role: plugins
+  replicas: {{ .Values.plugins.replicacount }}
+  template:
+    metadata:
+      annotations:
+        metrics-enabled: {{ .Values.metrics.enabled | quote }}
+        checksum/secrets.yaml: {{ include (print $.Template.BasePath "/secrets.yaml") . | sha256sum }}
+      {{- if .Values.plugins.podAnnotations }}
+{{ toYaml .Values.plugins.podAnnotations | indent 8 }}
+      {{- end }}
+      labels:
+        app: {{ template "posthog.fullname" . }}
+        release: "{{ .Release.Name }}"
+        role: plugins
+        {{- if .Values.plugins.podLabels }}
+{{ toYaml .Values.plugins.podLabels | indent 8 }}
+        {{- end }}
+    spec:
+      serviceAccountName: {{ template "posthog.serviceAccountName" . }}
+      {{- if .Values.plugins.affinity }}
+      affinity:
+{{ toYaml .Values.plugins.affinity | indent 8 }}
+      {{- end }}
+      {{- if .Values.plugins.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.plugins.nodeSelector | indent 8 }}
+      {{- end }}
+      {{- if .Values.plugins.tolerations }}
+      tolerations:
+{{ toYaml .Values.plugins.tolerations | indent 8 }}
+      {{- end }}
+      {{- if .Values.plugins.schedulerName }}
+      schedulerName: "{{ .Values.plugins.schedulerName }}"
+      {{- end }}
+      {{- if .Values.plugins.priorityClassName }}
+      priorityClassName: "{{ .Values.plugins.priorityClassName }}"
+      {{- end }}
+      {{- if .Values.image.imagePullSecrets }}
+      imagePullSecrets:
+{{ toYaml .Values.image.imagePullSecrets | indent 8 }}
+      {{- end }}
+      containers:
+      - name: {{ .Chart.Name }}-plugins
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        command:
+          - /bin/sh
+          - -c
+          - |
+            ./bin/plugin-server
+        ports:
+        - containerPort: {{ .Values.service.internalPort }}
+        env:
+        - name: SECRET_KEY
+          valueFrom:
+            secretKeyRef:
+              name: {{ template "posthog.fullname" . }}
+              key: posthog-secret
+        - name: POSTHOG_DB_USER
+          value: {{ default "posthog" .Values.postgresql.postgresqlUsername | quote }}
+        - name: POSTHOG_DB_NAME
+          value: {{ default "posthog" .Values.postgresql.postgresqlDatabase | quote }}
+        - name: POSTHOG_DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+            {{- if .Values.postgresql.existingSecret }}
+              name: {{ .Values.postgresql.existingSecret }}
+            {{- else }}
+              name: {{ template "posthog.postgresql.secret" . }}
+            {{- end }}
+              key: {{ template "posthog.postgresql.secretKey" . }}
+        - name: POSTHOG_POSTGRES_HOST
+          value: {{ template "posthog.postgresql.host" . }}
+        - name: POSTHOG_POSTGRES_PORT
+          value: {{ template "posthog.postgresql.port" . }}
+        {{- if or (.Values.redis.enabled) (.Values.redis.password) }}
+        - name: POSTHOG_REDIS_PASSWORD
+          valueFrom:
+            secretKeyRef:
+            {{- if .Values.redis.existingSecret }}
+              name: {{ .Values.redis.existingSecret }}
+            {{- else }}
+              name: {{ template "posthog.redis.secret" . }}
+            {{- end }}
+              key: {{ template "posthog.redis.secretKey" . }}
+        {{- end }}
+        - name: POSTHOG_REDIS_HOST
+          value: {{ template "posthog.redis.host" . }}
+        - name: POSTHOG_REDIS_PORT
+          value: {{ template "posthog.redis.port" . }}
+        - name: EMAIL_HOST
+          value: {{ default "" .Values.email.host | quote }}
+        - name: EMAIL_PORT
+          value: {{ default "" .Values.email.port | quote }}
+        - name: EMAIL_HOST_USER
+          value: {{ default "" .Values.email.user | quote }}
+        - name: EMAIL_HOST_PASSWORD
+          valueFrom:
+            secretKeyRef:
+            {{- if .Values.email.existingSecret }}
+              name: {{ .Values.email.existingSecret }}
+            {{- else }}
+              name: {{ template "posthog.fullname" . }}
+            {{- end }}
+              key: smtp-password
+        - name: EMAIL_USE_TLS
+          value: {{ .Values.email.use_tls | quote }}
+        - name: EMAIL_USE_SSL
+          value: {{ .Values.email.use_ssl | quote }}
+        - name: DEFAULT_FROM_EMAIL
+          value: {{ .Values.email.from_email | quote }}
+{{- if .Values.plugins.env }}
+{{ toYaml .Values.plugins.env | indent 8 }}
+{{- end }}
+        resources:
+{{ toYaml .Values.plugins.resources | indent 12 }}
