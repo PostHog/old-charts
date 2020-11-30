@@ -2,6 +2,32 @@ apiVersion: v1
 entries:
   posthog:
   - apiVersion: v1
+    appVersion: 1.18.0
+    created: "2020-11-30T18:35:56.066214662Z"
+    dependencies:
+    - condition: postgresql.enabled
+      name: postgresql
+      repository: https://kubernetes-charts.storage.googleapis.com/
+      version: 8.6.1
+    - condition: redis.enabled
+      name: redis
+      repository: https://kubernetes-charts.storage.googleapis.com/
+      version: 9.3.2
+    description: "\U0001F994 PostHog is developer-friendly, open-source product analytics."
+    digest: ef984e22f66773ea3d4d94564589de7007666154a60b74299a27a935b5ba900a
+    icon: https://camo.githubusercontent.com/11f72f57f33d7d34807bafc1314844f7a91bcdea/68747470733a2f2f706f7374686f672d7374617469632d66696c65732e73332e75732d656173742d322e616d617a6f6e6177732e636f6d2f576562736974652d4173736574732f6769746875622d636f7665722e706e67
+    maintainers:
+    - email: marius@posthog.com
+      name: mariusandra
+    - email: tim@posthog.com
+      name: timgl
+    - email: james.g@posthog.com
+      name: jams
+    name: posthog
+    urls:
+    - https://github.com/PostHog/charts/releases/download/posthog-1.4.1/posthog-1.4.1.tgz
+    version: 1.4.1
+  - apiVersion: v1
     appVersion: 1.17.1
     created: "2020-11-24T11:23:51.131072034Z"
     dependencies:
