@@ -95,6 +95,8 @@ worker:
 
 # How many plugin server instances to run
 plugins:
+  ingestion:
+    enabled: false
   hpa:
     enabled: false
     cputhreshold: 60

@@ -123,6 +123,10 @@ spec:
           value: {{ .Values.email.use_ssl | quote }}
         - name: DEFAULT_FROM_EMAIL
           value: {{ .Values.email.from_email | quote }}
+        {{- if .Values.plugins.ingestion.enabled }}
+        - name: PLUGIN_SERVER_INGESTION
+          value: '1'
+        {{- end }}
 {{- if .Values.worker.env }}
 {{ toYaml .Values.worker.env | indent 8 }}
 {{- end }}
