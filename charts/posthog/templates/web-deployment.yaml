@@ -124,9 +124,8 @@ spec:
           value: {{ .Values.email.from_email | quote }}
         {{- if .Values.plugins.ingestion.enabled }}
         - name: PLUGIN_SERVER_INGESTION
-          value: '1'
+          value: 'true'
         {{- end }}
-
 {{- if .Values.env }}
 {{ toYaml .Values.env | indent 8 }}
 {{- end }}
