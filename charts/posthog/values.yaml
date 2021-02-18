@@ -3,7 +3,7 @@
 # Declare variables to be passed into your templates.
 image:
   repository: posthog/posthog
-  tag: release-1.19.0
+  tag: release-1.21.0
   pullPolicy: IfNotPresent
 
 posthogSecret: ""
@@ -276,6 +276,9 @@ hooks:
         memory: 1000Mi
       requests:
         memory: 1000Mi
+    # Defaults to performing the DB migration job after the install/upgrade. 
+    # Can be overridden to "pre-install,pre-upgrade" with caution to perform migrations that are sometimes required for the deployment to become healthy
+    hookAnnotation: "post-install,post-upgrade"
 
 serviceAccount:
   # Specifies whether a service account should be created

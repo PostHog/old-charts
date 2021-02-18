@@ -23,3 +23,7 @@ We have an action to create new releases automatically. On pushes to `master`, i
 - Pushes a new release to https://posthog.github.io/charts/
 
 If the bot fails to create a release, take a look at the [upstream action repo](https://github.com/helm/chart-releaser-action) to see if there were any breaking changes.
+
+## Questions?
+
+### [Join our Slack community.](https://join.slack.com/t/posthogusers/shared_invite/enQtOTY0MzU5NjAwMDY3LTc2MWQ0OTZlNjhkODk3ZDI3NDVjMDE1YjgxY2I4ZjI4MzJhZmVmNjJkN2NmMGJmMzc2N2U3Yjc3ZjI5NGFlZDQ)
