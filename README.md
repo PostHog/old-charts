@@ -1,18 +1,18 @@
-# Posthog Charts
+# PostHog Charts
 
-This repository contains helm charts for PostHog:
+This repository contains Helm charts for PostHog:
 
 * [PostHog](https://github.com/PostHog/charts/blob/master/charts/posthog/README.md)
 
-```shell script
+```bash
 helm repo add posthog https://posthog.github.io/charts/
 helm repo update
 helm install posthog posthog/posthog
 ```
 
-**NOTE - If Helm hangs while installing this chart try increasing the memory of your nodes**
+**NOTE: If Helm hangs while installing this chart, try increasing the memory of your nodes.**
 
-As a baseline we suggest having at least 4gb of memory per node
+As a baseline we suggest having at least 4 GB of memory per node.
 
 
 ## GitHub Actions
