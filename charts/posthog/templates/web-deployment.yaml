@@ -63,7 +63,9 @@ spec:
         - containerPort: {{ .Values.service.internalPort }}
         env:
         - name: DISABLE_SECURE_SSL_REDIRECT
-          value: '1'
+          value: {{ default "1" .Values.disableSecureSslRedirect | quote }}
+        - name: SECURE_COOKIES 
+          value: {{ default "0" .Values.useSecureCookies | quote }}
         - name: SECRET_KEY
           valueFrom:
             secretKeyRef:
