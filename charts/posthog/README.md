@@ -62,6 +62,8 @@ Parameter                                            | Description              
 `image.pullPolicy`                                   | Image pull policy                                                                                          | `Always`
 `image.imagePullSecrets`                             | Specify image pull secrets                                                                                 | `[]`
 `posthogSecret`                                      | Specify SECRET_KEY. If isn't specified it will be generated automatically.                                 | `nil`
+`disableSecureSslRedirect`                           | Specify DISABLE_SECURE_SSL_REDIRECT.                                                                       | `1`
+`useSecureCookies`                                   | Specify SECURE_COOKIES.                                                                                    | `0`
 `web.podAnnotations`                                 | Web pod annotations                                                                                        | `{}`
 `web.podLabels`                                      | Web pod extra labels                                                                                       | `{}`
 `web.replicacount`                                   | Amount of web pods to run                                                                                  | `1`
