@@ -122,6 +122,9 @@ spec:
           value: {{ .Values.email.use_ssl | quote }}
         - name: DEFAULT_FROM_EMAIL
           value: {{ .Values.email.from_email | quote }}
+{{- if .Values.env }}
+{{ toYaml .Values.env | indent 8 }}
+{{- end }}
 {{- if .Values.beat.env }}
 {{ toYaml .Values.beat.env | indent 8 }}
 {{- end }}
