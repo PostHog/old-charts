@@ -8,6 +8,8 @@ image:
 
 posthogSecret: ""
 
+env: []
+
 # How many web UI instances to run
 web:
   hpa:
