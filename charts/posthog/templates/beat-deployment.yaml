@@ -67,8 +67,13 @@ spec:
         - name: SECRET_KEY
           valueFrom:
             secretKeyRef:
+            {{- if .Values.posthogExistingSecret }}
+              name: {{ .Values.posthogExistingSecret }}
+              key: {{ .Values.posthogExistingSecretKey }}
+            {{- else }}
               name: {{ template "posthog.fullname" . }}
               key: posthog-secret
+            {{- end }}
         - name: POSTHOG_DB_USER
           value: {{ default "posthog" .Values.postgresql.postgresqlUsername | quote }}
         - name: POSTHOG_DB_NAME
