@@ -2,7 +2,7 @@
 
 This repository contains Helm charts for PostHog:
 
-* [PostHog](https://github.com/PostHog/charts/blob/master/charts/posthog/README.md)
+* [PostHog postgres](https://github.com/PostHog/charts/blob/master/charts/posthog-postgres/README.md)
 
 ```bash
 helm repo add posthog https://posthog.github.io/charts/
