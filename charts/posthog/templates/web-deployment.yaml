@@ -95,7 +95,7 @@ spec:
           value: {{ template "posthog.postgresql.host" . }}
         - name: POSTHOG_POSTGRES_PORT
           value: {{ template "posthog.postgresql.port" . }}
-        {{- if or (.Values.redis.enabled) (.Values.redis.password) }}
+        {{- if or (.Values.redis.enabled) (.Values.redis.password) (.Values.redis.existingSecret) }}
         - name: POSTHOG_REDIS_PASSWORD
           valueFrom:
             secretKeyRef:
