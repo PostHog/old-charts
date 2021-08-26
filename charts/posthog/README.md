@@ -109,6 +109,7 @@ Parameter                                            | Description              
 `ingress.annotations`                                | Ingress annotations                                                                                        | `{}`
 `ingress.hostname`                                   | URL to address your PostHog installation                                                                   | `posthog.local`
 `ingress.path`                                       | path to address your PostHog installation                                                                  | `/`
+`ingress.scheme`                                     | Scheme used by SITE_URL                                                                                    | `http`
 `ingress.tls`                                        | Ingress TLS configuration                                                                                  | `[]`
 `postgresql.enabled`                                 | Deploy postgres server (see below)                                                                         | `true`
 `postgresql.postgresqlDatabase`                      | Postgres database name                                                                                     | `posthog`
@@ -179,5 +180,4 @@ To avoid issues when upgrading this chart, provide `redis.password` for subseque
 
 ## Ingress
 
-This chart provides support for Ingress resource. If you have an available Ingress Controller such as Nginx or Traefik you maybe want to set `ingress.enabled` to true and choose an `ingress.hostname` for the URL. Then, you should be able to access the installation using that address.
-
+This chart provides support for Ingress resource. If you have an available Ingress Controller such as Nginx or Traefik you maybe want to set `ingress.enabled` to true and choose an `ingress.hostname` for the URL. Then, you should be able to access the installation using that address. The `ingress.hostname` is also used to set the `SITE_URL` environment variable within the chart. Providing an `ingress.scheme` will modify the scheme set for the `SITE_URL` as well. It defaults to `http` but can be set to `https` if applicable. 
