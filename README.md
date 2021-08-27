@@ -1,6 +1,8 @@
 # PostHog Charts
 
-This repository contains Helm charts for PostHog:
+This repository contains Helm charts for PostHog backed by Postgres. 
+
+**NOTE: For all new installs we recommend using PostHog backed by ClickHouse instead, see the [charts-clickhouse](https://github.com/PostHog/charts-clickhouse) repository.**
 
 * [PostHog](https://github.com/PostHog/charts/blob/master/charts/posthog/README.md)
 
