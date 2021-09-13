@@ -164,6 +164,7 @@ service:
 ingress:
   enabled: false
   hostname: posthog.local
+  scheme: http
 
   ## Ingress annotations
   ##

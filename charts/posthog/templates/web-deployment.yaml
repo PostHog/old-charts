@@ -63,7 +63,7 @@ spec:
         - containerPort: {{ .Values.service.internalPort }}
         env:
         - name: SITE_URL 
-          value: {{ default "http://127.0.0.1:8000" .Values.ingress.hostname | quote }} 
+          value: {{ printf "%s://%s" .Values.ingress.scheme .Values.ingress.hostname | quote }}
         - name: DISABLE_SECURE_SSL_REDIRECT
           value: {{ default "1" .Values.disableSecureSslRedirect | quote }}
         - name: SECURE_COOKIES 
