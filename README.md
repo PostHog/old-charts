@@ -1,10 +1,12 @@
+# ⚠️ DEPRECATION WARNING: This deployment method is no longer supported.
+
+For all new installs please refer to the [charts-clickhouse](https://github.com/PostHog/charts-clickhouse) repository, which contains instructions on how to deploy ClickHouse-backed PostHog.
+
+The last version of PostHog supported with this chart is 1.29.0.
+
 # PostHog Charts
 
-This repository contains Helm charts for PostHog backed by Postgres. 
-
-**NOTE: For all new installs we recommend using PostHog backed by ClickHouse instead, see the [charts-clickhouse](https://github.com/PostHog/charts-clickhouse) repository.**
-
-* [PostHog](https://github.com/PostHog/charts/blob/master/charts/posthog/README.md)
+This repository contains Helm charts for PostHog backed by Postgres.
 
 ```bash
 helm repo add posthog https://posthog.github.io/charts/
@@ -15,7 +17,6 @@ helm install posthog posthog/posthog
 **NOTE: If Helm hangs while installing this chart, try increasing the memory of your nodes.**
 
 As a baseline we suggest having at least 4 GB of memory per node.
-
 
 ## GitHub Actions
 
