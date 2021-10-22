@@ -2,6 +2,32 @@ apiVersion: v1
 entries:
   posthog:
   - apiVersion: v1
+    appVersion: 1.29.0
+    created: "2021-10-22T13:56:04.344656468Z"
+    dependencies:
+    - condition: postgresql.enabled
+      name: postgresql
+      repository: https://charts.bitnami.com/bitnami
+      version: 8.6.1
+    - condition: redis.enabled
+      name: redis
+      repository: https://charts.bitnami.com/bitnami
+      version: 9.3.2
+    description: "\U0001F994 PostHog is developer-friendly, open-source product analytics."
+    digest: 6548ff2a40c90f466dbf529291a3d4c8af9d9a4f7d3a8984c20ee7351c593dbc
+    icon: https://camo.githubusercontent.com/11f72f57f33d7d34807bafc1314844f7a91bcdea/68747470733a2f2f706f7374686f672d7374617469632d66696c65732e73332e75732d656173742d322e616d617a6f6e6177732e636f6d2f576562736974652d4173736574732f6769746875622d636f7665722e706e67
+    maintainers:
+    - email: marius@posthog.com
+      name: mariusandra
+    - email: tim@posthog.com
+      name: timgl
+    - email: james.g@posthog.com
+      name: jams
+    name: posthog
+    urls:
+    - https://github.com/PostHog/charts/releases/download/posthog-1.5.0/posthog-1.5.0.tgz
+    version: 1.5.0
+  - apiVersion: v1
     appVersion: 1.28.1
     created: "2021-09-27T17:20:24.663497221Z"
     dependencies:
