@@ -2,7 +2,7 @@
 
 For all new installs please refer to the [charts-clickhouse](https://github.com/PostHog/charts-clickhouse) repository, which contains instructions on how to deploy ClickHouse-backed PostHog.
 
-The last version of PostHog supported with this chart is 1.29.1.
+The last version of PostHog supported with this chart is 1.30.0.
 
 # PostHog Charts
 
