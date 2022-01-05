@@ -33,6 +33,8 @@ web:
   nodeSelector: {}
   tolerations: []
   affinity: {}
+  securityContext:
+    enabled: false
   livenessProbe:
     failureThreshold: 5
     initialDelaySeconds: 50
@@ -67,6 +69,8 @@ beat:
   nodeSelector: {}
   tolerations: []
   affinity: {}
+  securityContext:
+    enabled: false
   # priorityClassName: ""
   # schedulerName:
   # Optional extra labels for pod, i.e. redis-client: "true"
@@ -92,6 +96,8 @@ worker:
   nodeSelector: {}
   tolerations: []
   affinity: {}
+  securityContext:
+    enabled: false
   # priorityClassName: ""
   # schedulerName:
   # Optional extra labels for pod, i.e. redis-client: "true"
@@ -118,6 +124,8 @@ plugins:
   nodeSelector: {}
   tolerations: []
   affinity: {}
+  securityContext:
+    enabled: false
   # priorityClassName: ""
   # schedulerName:
   # Optional extra labels for pod, i.e. redis-client: "true"
@@ -216,6 +224,8 @@ redis:
 ##
 metrics:
   enabled: false
+  securityContext:
+    enabled: false
 
   ## Configure extra options for liveness and readiness probes
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/#configure-probes)
@@ -277,6 +287,8 @@ hooks:
   affinity: {}
   migrate:
     env: []
+    securityContext:
+      enabled: false
     resources:
       limits:
         memory: 1000Mi

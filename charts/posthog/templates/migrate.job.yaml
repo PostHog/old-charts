@@ -35,6 +35,9 @@ spec:
       imagePullSecrets:
 {{ toYaml .Values.image.imagePullSecrets | indent 8 }}
       {{- end }}
+      {{- if .Values.hooks.migrate.securityContext.enabled }}
+      securityContext: {{- omit .Values.hooks.migrate.securityContext "enabled" | toYaml | nindent 8 }}
+      {{- end }}
       containers:
       - name: migrate-job
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"

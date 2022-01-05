@@ -36,6 +36,9 @@ spec:
       {{- if .Values.metrics.schedulerName }}
       schedulerName: "{{ .Values.metrics.schedulerName }}"
       {{- end }}
+      {{- if .Values.metrics.securityContext.enabled }}
+      securityContext: {{- omit .Values.metrics.securityContext "enabled" | toYaml | nindent 8 }}
+      {{- end }}
       containers:
       - name: {{ .Chart.Name }}-metrics
         args: 
